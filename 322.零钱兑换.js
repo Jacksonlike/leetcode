@@ -11,20 +11,18 @@
  * @return {number}
  */
 var coinChange = function(coins, amount) {
-  const result = [0];
-  for (let i = 1; i <= amount; i++) {
-    let num = Infinity;
-    for (const coin of coins) {
-      const coinNum = (result[i - coin] ?? -1) + 1;
-      if (coinNum > 0 && num > coinNum) {
-        num = coinNum;
-      }
-    }
+  const result = Array.from({ length: amount + 1 }, (_, i) => i === 0 ? 0 : Infinity);
 
-    result[i] = num === Infinity ? -1 : num;
+  for (const coin of coins) {
+    result[coin] = 1;
+    for (let i = coin; i <= amount; i++) {
+      result[i] = Math.min(result[i - coin] + 1, result[i]);
+    }
   }
 
-  console.log(result);
-  return result[amount];
+  // console.log(result);
+  return result[amount] === Infinity ? -1 : result[amount];
 };
 // @lc code=end
+
+console.log(coinChange([2,5,10,1], 27));
